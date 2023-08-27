@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime;
 
 namespace F.TimeRanges
 {
@@ -8,9 +9,6 @@ namespace F.TimeRanges
         static void Main(string[] args)
         {
             byte numberOfDatas = Convert.ToByte(Console.ReadLine());
-
-            //DateTime timeRange1 = new DateTime();
-            //DateTime timeRange2 = new DateTime();
 
             for (int i = 0; i < numberOfDatas; i++)
             {
@@ -64,42 +62,90 @@ namespace F.TimeRanges
                     timeArray[i, 0] = new DateTime(2023, 8, 27, hour1, minutes1, seconds1);
                     timeArray[i, 1] = new DateTime(2023, 8, 27, hour2, minutes2, seconds2);
                     result = "YES";
-                    //result += $"\n{(timeArray[i, 1] - timeArray[i, 0]).TotalSeconds}";
                 }
-                //else result = "NO";
-
-
-                if ((timeArray[i, 1] - timeArray[i, 0]).TotalSeconds < 0)
+                if ((timeArray[i, 0] - timeArray[i, 1]).TotalSeconds > 0)
                 {
                     result = "NO";
-                    //result += $"\n{(timeArray[i, 1] - timeArray[i, 0]).TotalSeconds}";
                     break;
                 }
-                for (int j = 0; j< timeStrings.Length; j++)
+
+                #region СОРТИРОВКА
+                for (int v = 0; v < timeStrings.Length; v++)
                 {
-
-
-                    for (int k = j + 1; k < timeStrings.Length; k++)
+                    for (int z = v+1; z < timeStrings.Length; z++)
                     {
+                        if ((timeArray[v,0] - timeArray[z,0]).TotalSeconds < 0)
+                        {
+                            DateTime[] tempVariable = new DateTime[2];
+                            tempVariable[0] = timeArray[v, 0];
+                            tempVariable[1] = timeArray[v, 1];
 
-                        //result += $"\n{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
-                        if (
-                            (timeArray[j, 0] - timeArray[k, 1]).TotalSeconds > 0 ||
-                            (timeArray[k, 0] - timeArray[j, 1]).TotalSeconds > 0
-                            )
-                        {
-                            result = "YES";
-                            //result = $"{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}";
+                            timeArray[v,0] = timeArray[z,0];
+                            timeArray[v, 1] = timeArray[z, 1];
+
+                            timeArray[z, 0] = tempVariable[0];
+                            timeArray[z, 1] = tempVariable[1];
+
+
                         }
-                        else 
+                        if ((timeArray[v, 0] - timeArray[z, 1]).TotalSeconds < 0)
                         {
-                            //result = $"{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}";
-                            //result += $"\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
-                            result = "NO"; 
-                            break; 
+                            result = "NO"; break;
                         }
                     }
                 }
+                #endregion
+
+
+                #region икл сравнения наложения отрезков
+
+                //for (int j = 0; j< timeStrings.Length; j++)
+                //{
+
+
+                //    for (int k = j + 1; k < timeStrings.Length; k++)
+                //    {
+
+                //        //result += $"\n{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
+                //        if (
+                //                //(
+                //                (
+                //                (timeArray[j, 0] - timeArray[k, 1]).TotalSeconds < 0) //&&
+                //                //((timeArray[j, 0] - timeArray[k, 0]).TotalSeconds > 0)
+                //                //||
+                //                //(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds > 0
+                //            )
+                //        {
+                //            result = "NO";
+                //            break;
+                //            //for (int s = 0; s < timeStrings.Length; s++)
+                //            //{
+                //            //    result += "\n";
+                //            //    result += timeArray[s, 0].Hour;
+                //            //    result += ":";
+                //            //    result += timeArray[s, 0].Minute;
+                //            //    result += ":";
+                //            //    result += timeArray[s, 0].Second;
+                //            //    result += "-";
+                //            //    result += timeArray[s, 1].Hour;
+                //            //    result += ":";
+                //            //    result += timeArray[s, 1].Minute;
+                //            //    result += ":";
+                //            //    result += timeArray[s, 1].Second;
+                //            //    result += "\n";
+                //            //}
+                //        }
+                //        else 
+                //        {
+                //            //result = $"{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}";
+                //            //result += $"\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
+                //            result = "YES"; 
+                //            //break; 
+                //        }
+                //    }
+                //}
+
+                #endregion
             }
 
             return result;
