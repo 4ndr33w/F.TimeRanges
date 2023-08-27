@@ -9,6 +9,9 @@ namespace F.TimeRanges
         {
             byte numberOfDatas = Convert.ToByte(Console.ReadLine());
 
+            //DateTime timeRange1 = new DateTime();
+            //DateTime timeRange2 = new DateTime();
+
             for (int i = 0; i < numberOfDatas; i++)
             {
                 var amountOfInputRanges = Convert.ToUInt16(Console.ReadLine());
@@ -16,71 +19,112 @@ namespace F.TimeRanges
                 
                 for(int j = 0; j < amountOfInputRanges; j++)
                 {
-                    timeStrings[j] = Console.ReadLine();
+                    timeStrings[j] = Console.ReadLine().Replace(" ", "");
                 }
-
-                Console.WriteLine(GetResult(timeStrings));
+                Console.WriteLine(GetDateTime(timeStrings));
             }
         }
 
-        static string GetResult(string[] timeStrings)
+        static string GetDateTime(string[] timeStrings)
         {
-            string result = "";
+            string result = "NO";
             string[] arrayResult = new string[timeStrings.Length];
+
+            DateTime[,] timeArray = new DateTime[timeStrings.Length, 2];
             for (int i = 0; i < timeStrings.Length; i++)
             {
-                byte hour1 = 0;
-                byte hour2 = 0;
+                int hour1 = 0;
+                int hour2 = 0;
 
-                byte minutes1 = 0;
-                byte minutes2 = 0;
+                int minutes1 = 0;
+                int minutes2 = 0;
 
-                byte seconds1 = 0;
-                byte seconds2 = 0;
+                int seconds1 = 0;
+                int seconds2 = 0;
                 for (int j = 0; j < (timeStrings.Length / 3) + 1; j++)
                 {
-                    hour1 = Convert.ToByte(timeStrings[i].Substring(0, 2)) ;
-                    hour2 = Convert.ToByte(timeStrings[i].Substring(9, 2));
+                    hour1 = Convert.ToInt32(timeStrings[i].Substring(0, 2));
+                    hour2 = Convert.ToInt32(timeStrings[i].Substring(9, 2));
 
-                    minutes1 = Convert.ToByte(timeStrings[i].Substring(3, 2));
-                    minutes2 = Convert.ToByte(timeStrings[i].Substring(12, 2));
+                    minutes1 = Convert.ToInt32(timeStrings[i].Substring(3, 2));
+                    minutes2 = Convert.ToInt32(timeStrings[i].Substring(12, 2));
 
-                    seconds1 = Convert.ToByte(timeStrings[i].Substring(6, 2));
-                    seconds2 = Convert.ToByte(timeStrings[i].Substring(15, 2));
-
-                    //result += $"{hour1}" + "\n" + $"{hour2}" + "\n" + $"{minutes1}" + "\n" + $"{minutes2}" + "\n" + $"{seconds1}" + "\n" + $"{seconds2}";
-
-                    //Console.WriteLine($"{hour1}");
-                    //Console.WriteLine($"{hour2}");
-                    //Console.WriteLine($"{minutes1}");
-                    //Console.WriteLine($"{minutes2}");
-                    //Console.WriteLine($"{seconds1}");
-                    //Console.WriteLine($"{seconds2}");
+                    seconds1 = Convert.ToInt32(timeStrings[i].Substring(6, 2));
+                    seconds2 = Convert.ToInt32(timeStrings[i].Substring(15, 2));
                 }
-                result = GetBoolResult(hour1, hour2, minutes1, minutes2, seconds1, seconds2);
-                //result += timeStrings[i];
-                //var testArray = Convert.ToByte(timeStrings[i].Split(':').ToArray());
-                //arrayResult[i] = timeStrings[i];
+                if (
+                    hour1 < 24 && hour1 > -1 &&
+                    hour2 > -1 && hour2 < 24 &&
+                    minutes1 > -1 && minutes1 < 60 &&
+                    minutes2 > -1 && minutes2 < 60 &&
+                    seconds1 > -1 && seconds1 < 60 &&
+                    seconds2 > -1 && seconds2 < 60
+                    )
+                {
+                    timeArray[i, 0] = new DateTime(2023, 8, 27, hour1, minutes1, seconds1);
+                    timeArray[i, 1] = new DateTime(2023, 8, 27, hour2, minutes2, seconds2);
+                    result = "YES";
+                    //result += $"\n{(timeArray[i, 1] - timeArray[i, 0]).TotalSeconds}";
+                }
+                //else result = "NO";
+
+
+                if ((timeArray[i, 1] - timeArray[i, 0]).TotalSeconds < 0)
+                {
+                    result = "NO";
+                    //result += $"\n{(timeArray[i, 1] - timeArray[i, 0]).TotalSeconds}";
+                    break;
+                }
+                for (int j = 0; j< timeStrings.Length; j++)
+                {
+
+
+                    for (int k = j + 1; k < timeStrings.Length; k++)
+                    {
+
+                        //result += $"\n{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
+                        if (
+                            (timeArray[j, 0] - timeArray[k, 1]).TotalSeconds > 0 ||
+                            (timeArray[k, 0] - timeArray[j, 1]).TotalSeconds > 0
+                            )
+                        {
+                            result = "YES";
+                            //result = $"{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}";
+                        }
+                        else 
+                        {
+                            //result = $"{(timeArray[j, 0] - timeArray[k, 1]).TotalSeconds}";
+                            //result += $"\n{(timeArray[k, 0] - timeArray[j, 1]).TotalSeconds}";
+                            result = "NO"; 
+                            break; 
+                        }
+                    }
+                }
             }
-
-
-
 
             return result;
         }
 
-        static string GetBoolResult(byte hour1, byte hour2, byte minute1, byte minute2, byte second1, byte second2)
+        static string ConvertToDateTimeMethod(int hour1, int hour2, int minute1, int minute2, int second1, int second2)
         {
             string result = "NO";
             if (
-                hour1 < 24 && hour1 > -1 && 
+                hour1 < 24 && hour1 > -1 &&
                 hour2 > -1 && hour2 < 24 &&
                 minute1 > -1 && minute1 < 60 &&
                 minute2 > -1 && minute2 < 60 &&
                 second1 > -1 && second1 < 60 &&
-                second2 > -1 && second2 < 60)
+                second2 > -1 && second2 < 60
+                )
+            {
+                DateTime timeRange1 = new DateTime(2023, 8, 17, hour1, minute1, second1);
+                DateTime timeRange2 = new DateTime(2023, 8, 17, hour2, minute2, second2);
+                TimeSpan span = new TimeSpan();
+                span = timeRange2 - timeRange1;
+                if (span.TotalSeconds >= 0) result = "YES";
+            }
 
-                result = "YES";
+                
 
             return result;
         }
